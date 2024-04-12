@@ -1,0 +1,88 @@
+// datasource db defines the database connection settings.
+// It is configured for PostgreSQL and uses an environment variable for the connection URL.
+// The 'extensions' feature enables the use of PostgreSQL-specific data types.
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+}
+
+// generator db configures Prisma Client settings.
+// It is set up to use Prisma Client Python with asyncio interface and specific features.
+generator db {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = 5
+  previewFeatures      = ["postgresqlExtensions"]
+}
+
+model User {
+  id             String         @id @default(dbgenerated("gen_random_uuid()"))
+  email          String         @unique
+  hashedPassword String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  role           Role           @default(USER)
+  Feedbacks      Feedback[]
+  ComicSaves     ComicSave[]
+  Subscription   Subscription[]
+}
+
+model Comic {
+  id             String          @id @default(dbgenerated("gen_random_uuid()"))
+  comicNumber    Int             @unique
+  title          String
+  imgUrl         String
+  altText        String
+  explanation    String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  ComicSaves     ComicSave[]
+  AIExplanations AIExplanation[]
+}
+
+model AIExplanation {
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  explanation String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  comicId     String
+  Comic       Comic    @relation(fields: [comicId], references: [id], onDelete: Cascade)
+}
+
+model Feedback {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  content   String
+  createdAt DateTime @default(now())
+  userId    String
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ComicSave {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  userId    String
+  comicId   String
+  createdAt DateTime @default(now())
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Comic     Comic    @relation(fields: [comicId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id        String           @id @default(dbgenerated("gen_random_uuid()"))
+  userId    String
+  startedAt DateTime
+  expiresAt DateTime
+  type      SubscriptionType
+  User      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  USER
+  SUBSCRIBER
+  ADMIN
+}
+
+enum SubscriptionType {
+  MONTHLY
+  ANNUALLY
+}
+

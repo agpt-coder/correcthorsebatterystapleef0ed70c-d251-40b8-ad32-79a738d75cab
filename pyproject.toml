@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "correcthorsebatterystaple"
+version = "0.1.0"
+description = "To create a tool that returns a random XKCD comic every time it is called and uses GPT-4 Vision to explain the comic, we can follow these steps leveraging the selected tech stack (Python, FastAPI, PostgreSQL, and Prisma). First, we'll need to fetch a random comic from XKCD using Python. Given the lack of a direct API for random comics, we generate a random comic number based on the current total number of XKCD comics and fetch it via 'https://xkcd.com/{random_number}/info.0.json'. Since my last update doesn't include an actual 'GPT-4 Vision API', we'd simulate this part by outlining how we might integrate such a feature if it were available, focusing on sending the image to the API and processing its description in a human-understandable format. The FastAPI framework will serve as the backbone of our application, handling HTTP requests and responses. We will define an endpoint such as '/random-xkcd' which, upon being called, executes our comic fetching logic. After obtaining the comic, assuming the existence of a 'GPT-4 Vision API', we would send the comic's image for analysis and extract a description. This description, along with the comic's image and title, will then be presented to the user. For persistence, such as tracking which comics have been fetched or storing generated descriptions, we'd leverage PostgreSQL with Prisma as the ORM for structured data handling and efficient database interactions. However, it's important to note that as of my last update, a 'GPT-4 Vision API' by OpenAI or a similar entity was not available for public use. Thus, the explanation part would have to wait until such a technology becomes accessible, or we'd leverage other existing vision APIs with capabilities to analyze and describe images."
+authors = ["AutoGPT <info@agpt.co>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+fastapi = "^0.70.0"
+httpx = "^0.20.0"
+prisma = "*"
+pydantic = "*"
+uvicorn = "*"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
